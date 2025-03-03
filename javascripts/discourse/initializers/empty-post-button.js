@@ -7,19 +7,23 @@ export default {
   initialize() {
     withPluginApi("0.8", (api) => {
       const currentUser = api.getCurrentUser();
-      
+
+      if (!currentUser) {
+        return;
+      }
+
       if (currentUser.trust_level < settings.trust_level) {
         return;
       }
-      
+
       const currentLocale = I18n.currentLocale();
       if (!I18n.translations[currentLocale].js.composer) {
         I18n.translations[currentLocale].js.composer = {};
       }
-      
+
       I18n.translations[currentLocale].js.empty_post_button_title = I18n.t(themePrefix("composer_empty_post_button_title"));
       I18n.translations[currentLocale].js.composer.empty_post_button_text = I18n.t(themePrefix("composer_empty_post_button_text"));
-      
+
       api.modifyClass("controller:composer", {
         pluginId: "EmptyPostButton",
 
@@ -34,7 +38,7 @@ export default {
           },
         },
       });
-      
+
       if (settings.put_in_popup_menu) {
         api.addComposerToolbarPopupMenuOption({
           icon: settings.composer_empty_post_button_icon,
